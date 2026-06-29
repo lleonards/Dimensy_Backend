@@ -4,11 +4,15 @@ const supabase = require('../lib/supabase');
 const { requireAuth } = require('../middleware/auth');
 const webpush = require('web-push');
 
-webpush.setVapidDetails(
-  process.env.VAPID_EMAIL,
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
+try {
+  webpush.setVapidDetails(
+    process.env.VAPID_EMAIL,
+    process.env.VAPID_PUBLIC_KEY,
+    process.env.VAPID_PRIVATE_KEY
+  );
+} catch (err) {
+  console.warn('⚠️ Notificações Push desativadas temporariamente:', err.message);
+}
 
 // GET /api/notifications/company/:companyId
 router.get('/company/:companyId', requireAuth, async (req, res) => {
